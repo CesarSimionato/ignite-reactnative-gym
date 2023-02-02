@@ -1,4 +1,7 @@
-import { VStack, Image, Center, Text, Heading, ScrollView } from "native-base"
+import { ScrollView, VStack, Image, Center, Text, Heading } from "native-base"
+
+import { useNavigation } from "@react-navigation/native"
+import { AuthNavigatorProps } from "@routes/auth.routes"
 
 import BackgroundImg from "@assets/background.png"
 
@@ -8,6 +11,12 @@ import { Input } from "@components/Input"
 import { Button } from "@components/Button"
 
 export const SignIn: React.FC = () => {
+  const navigation = useNavigation<AuthNavigatorProps>()
+
+  const handleNewAccount = () => {
+    navigation.navigate("signUp")
+  }
+
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
@@ -17,10 +26,10 @@ export const SignIn: React.FC = () => {
         flex={1}
         px={10}
         pb={16}
-        bg="gray.700"
       >
         <Image
           source={BackgroundImg}
+          defaultSource={BackgroundImg}
           alt="Pessoas treinando"
           resizeMode="contain"
           position="absolute"
@@ -74,6 +83,7 @@ export const SignIn: React.FC = () => {
         <Button
           title="Criar conta"
           variant="outline"
+          onPress={handleNewAccount}
         />
       </VStack>
     </ScrollView>
