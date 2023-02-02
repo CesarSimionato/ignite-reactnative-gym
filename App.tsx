@@ -1,6 +1,8 @@
 /* eslint-disable camelcase */
 
-import { StatusBar, Text, View } from "react-native"
+import { StatusBar, View } from "react-native"
+
+import { NativeBaseProvider } from "native-base"
 
 import {
   useFonts,
@@ -15,20 +17,13 @@ export default function App() {
   })
 
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#202024",
-      }}
-    >
+    <NativeBaseProvider>
       <StatusBar
         barStyle="light-content"
         backgroundColor="transparent"
         translucent
       />
-      {fontsLoaded ? <Text>Hello World!</Text> : <View></View>}
-    </View>
+      {fontsLoaded ? <View></View> : <View></View>}
+    </NativeBaseProvider>
   )
 }
