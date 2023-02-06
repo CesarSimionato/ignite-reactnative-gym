@@ -1,6 +1,7 @@
 import { ScrollView, VStack, Image, Center, Text, Heading } from "native-base"
 
 import { useNavigation } from "@react-navigation/native"
+import { AuthNavigatorProps } from "@routes/auth.routes"
 
 import BackgroundImg from "@assets/background.png"
 
@@ -10,7 +11,7 @@ import { Input } from "@components/Input"
 import { Button } from "@components/Button"
 
 export const SignUp: React.FC = () => {
-  const navigation = useNavigation()
+  const navigation = useNavigation<AuthNavigatorProps>()
 
   const handleGoBack = () => {
     navigation.goBack()
