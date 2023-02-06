@@ -22,7 +22,7 @@ export const ExerciseCard: React.FC<Props> = ({ ...rest }) => {
           w={16}
           h={16}
           rounded="md"
-          resizeMode="center"
+          resizeMode="cover"
           source={{
             uri: "http://conteudo.imguol.com.br/c/entretenimento/0c/2019/12/03/remada-unilateral-com-halteres-1575402100538_v2_600x600.jpg",
           }}

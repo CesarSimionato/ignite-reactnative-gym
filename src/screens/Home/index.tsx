@@ -32,6 +32,7 @@ export const Home: React.FC = () => {
 
       <FlatList
         maxH={10}
+        minH={10}
         my={10}
         horizontal
         showsHorizontalScrollIndicator={false}
