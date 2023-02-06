@@ -4,9 +4,9 @@ import { HStack, VStack, Text, Heading, Icon } from "native-base"
 
 import { MaterialIcons } from "@expo/vector-icons"
 
-import { UserPhoto } from "./UserPhoto"
+import { UserPhoto } from "@components/UserPhoto"
 
-export const HomeHeader: React.FC = () => {
+export const Header: React.FC = () => {
   return (
     <HStack
       bg="gray.600"

@@ -2,9 +2,9 @@ import { useState } from "react"
 
 import { VStack, FlatList, HStack, Heading, Text } from "native-base"
 
-import { HomeHeader } from "@components/HomeHeader"
-import { Group } from "@components/Group"
-import { ExerciseCard } from "@components/ExerciseCard"
+import { Header } from "./components/Header"
+import { Group } from "./components/Group"
+import { ExerciseCard } from "./components/ExerciseCard"
 
 export const Home: React.FC = () => {
   const [groups, setGroups] = useState(["costas", "bíceps", "tríceps", "ombro"])
@@ -19,7 +19,7 @@ export const Home: React.FC = () => {
 
   return (
     <VStack flex={1}>
-      <HomeHeader />
+      <Header />
 
       <FlatList
         maxH={10}
