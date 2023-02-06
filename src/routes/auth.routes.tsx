@@ -22,6 +22,7 @@ export const AuthRoutes: React.FC = () => {
         name="signIn"
         component={SignIn}
       />
+
       <Screen
         name="signUp"
         component={SignUp}
