@@ -1,5 +1,9 @@
 import { useState } from "react"
 
+import * as ImagePicker from "expo-image-picker"
+
+import * as FileSystem from "expo-file-system"
+
 import { TouchableOpacity } from "react-native"
 
 import {
@@ -9,6 +13,7 @@ import {
   Skeleton,
   Text,
   Heading,
+  useToast,
 } from "native-base"
 
 import { ScreenHeader } from "@components/ScreenHeader"
@@ -17,9 +22,53 @@ import { Input } from "@components/Input"
 import { Button } from "@components/Button"
 
 const PHOTO_SIZE = 33
+const MAX_UPLOAD_PHOTO_SIZE = 3 // MB
 
 export const Profile: React.FC = () => {
+  const toast = useToast()
+
   const [photoIsLoading, setPhotoIsLoading] = useState(false)
+  const [userPhoto, setUserPhoto] = useState(
+    "https://github.com/cesarmsimionato.png",
+  )
+
+  const handleUserPhotoSelect = async () => {
+    try {
+      setPhotoIsLoading(true)
+
+      const photoSelected = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        aspect: [4, 4],
+        quality: 1,
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      })
+
+      if (!photoSelected.canceled) {
+        if (photoSelected.assets[0].uri) {
+          const photoInfo = await FileSystem.getInfoAsync(
+            photoSelected.assets[0].uri,
+          )
+
+          if (
+            photoInfo.size &&
+            photoInfo.size / 1024 / 1024 > MAX_UPLOAD_PHOTO_SIZE
+          ) {
+            return toast.show({
+              description: `Essa imagem é muito grande, Escolha uma até ${MAX_UPLOAD_PHOTO_SIZE}MB`,
+              placement: "bottom",
+              bgColor: "red.500",
+              mb: 8,
+            })
+          }
+
+          setUserPhoto(photoSelected.assets[0].uri)
+        }
+      }
+    } catch (error) {
+    } finally {
+      setPhotoIsLoading(false)
+    }
+  }
 
   return (
     <VStack flex={1}>
@@ -41,7 +90,7 @@ export const Profile: React.FC = () => {
             />
           ) : (
             <UserPhoto
-              source={{ uri: "https://github.com/cesarmsimionato.png" }}
+              source={{ uri: userPhoto }}
               size={PHOTO_SIZE}
             />
           )}
@@ -53,6 +102,7 @@ export const Profile: React.FC = () => {
               color="green.500"
               fontSize="md"
               fontWeight="bold"
+              onPress={handleUserPhotoSelect}
             >
               Alterar foto
             </Text>
