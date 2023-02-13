@@ -17,7 +17,7 @@ export const Routes: React.FC = () => {
       bg="gray.700"
     >
       <NavigationContainer theme={theme}>
-        <AppRoutes />
+        <AuthRoutes />
       </NavigationContainer>
     </Box>
   )
