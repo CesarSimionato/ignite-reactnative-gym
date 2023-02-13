@@ -32,6 +32,7 @@ export const Header: React.FC = () => {
         <Heading
           color="gray.100"
           fontSize="md"
+          fontFamily="heading"
         >
           Cesar
         </Heading>

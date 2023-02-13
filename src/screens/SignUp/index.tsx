@@ -82,6 +82,7 @@ export const SignUp: React.FC = () => {
             mb="6"
             color="gray.100"
             fontSize="xl"
+            fontFamily="heading"
           >
             Crie sua conta
           </Heading>

@@ -33,6 +33,7 @@ export const ExerciseCard: React.FC<Props> = ({ ...rest }) => {
           <Heading
             color="white"
             fontSize="lg"
+            fontFamily="heading"
           >
             Remada unilateral
           </Heading>

@@ -51,6 +51,7 @@ export const SignIn: React.FC = () => {
             mb="6"
             color="gray.100"
             fontSize="xl"
+            fontFamily="heading"
           >
             Acesse sua conta
           </Heading>

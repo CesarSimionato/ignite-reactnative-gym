@@ -34,6 +34,7 @@ export const History: React.FC = () => {
             mb={3}
             color="gray.200"
             fontSize="md"
+            fontFamily="heading"
           >
             {section.title}
           </Heading>

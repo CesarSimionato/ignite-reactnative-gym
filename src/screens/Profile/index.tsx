@@ -126,6 +126,7 @@ export const Profile: React.FC = () => {
             alignSelf="flex-start"
             color="gray.200"
             fontSize="md"
+            fontFamily="heading"
           >
             Alterar senha
           </Heading>
