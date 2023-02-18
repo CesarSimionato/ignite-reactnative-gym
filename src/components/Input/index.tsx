@@ -16,6 +16,10 @@ export const Input: React.FC<Props> = ({
       isInvalid={invalid}
       mb={4}
     >
+      <FormControl.ErrorMessage _text={{ color: "red.500" }}>
+        {errorMessage}
+      </FormControl.ErrorMessage>
+
       <NativeBaseInput
         h={14}
         px={4}
@@ -35,10 +39,6 @@ export const Input: React.FC<Props> = ({
         }}
         {...rest}
       />
-
-      <FormControl.ErrorMessage _text={{ color: "red.500" }}>
-        {errorMessage}
-      </FormControl.ErrorMessage>
     </FormControl>
   )
 }

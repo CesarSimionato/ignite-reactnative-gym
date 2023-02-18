@@ -83,11 +83,7 @@ export const SignUp: React.FC = () => {
       contentContainerStyle={{ flexGrow: 1 }}
       showsVerticalScrollIndicator={false}
     >
-      <VStack
-        flex={1}
-        px={10}
-        pb={16}
-      >
+      <VStack flex={1}>
         <Image
           source={BackgroundImg}
           defaultSource={BackgroundImg}
@@ -96,97 +92,105 @@ export const SignUp: React.FC = () => {
           position="absolute"
         />
 
-        <Center my={24}>
-          <LogoSvg />
+        <VStack
+          flex={1}
+          justifyContent="space-between"
+          pt={24}
+          pb={10}
+          px={10}
+        >
+          <Center>
+            <LogoSvg />
 
-          <Text
-            color="gray.100"
-            fontSize="sm"
-          >
-            Treine sua mente e seu corpo
-          </Text>
-        </Center>
+            <Text
+              color="gray.100"
+              fontSize="sm"
+            >
+              Treine sua mente e seu corpo
+            </Text>
+          </Center>
 
-        <Center>
-          <Heading
-            mb="6"
-            color="gray.100"
-            fontSize="xl"
-            fontFamily="heading"
-          >
-            Crie sua conta
-          </Heading>
+          <Center mt={8}>
+            <Heading
+              mb={8}
+              color="gray.100"
+              fontSize="xl"
+              fontFamily="heading"
+            >
+              Crie sua conta
+            </Heading>
 
-          <Controller
-            name="name"
-            control={control}
-            render={({ field: { value, onChange } }) => (
-              <Input
-                placeholder="Nome"
-                errorMessage={errors.name?.message}
-                value={value}
-                onChangeText={onChange}
-              />
-            )}
-          />
+            <Controller
+              name="name"
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <Input
+                  placeholder="Nome"
+                  errorMessage={errors.name?.message}
+                  value={value}
+                  onChangeText={onChange}
+                />
+              )}
+            />
 
-          <Controller
-            name="email"
-            control={control}
-            render={({ field: { value, onChange } }) => (
-              <Input
-                placeholder="E-mail"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                errorMessage={errors.email?.message}
-                value={value}
-                onChangeText={onChange}
-              />
-            )}
-          />
+            <Controller
+              name="email"
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <Input
+                  placeholder="E-mail"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  errorMessage={errors.email?.message}
+                  value={value}
+                  onChangeText={onChange}
+                />
+              )}
+            />
 
-          <Controller
-            name="password"
-            control={control}
-            render={({ field: { value, onChange } }) => (
-              <Input
-                placeholder="Senha"
-                secureTextEntry
-                errorMessage={errors.password?.message}
-                value={value}
-                onChangeText={onChange}
-              />
-            )}
-          />
+            <Controller
+              name="password"
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <Input
+                  placeholder="Senha"
+                  secureTextEntry
+                  errorMessage={errors.password?.message}
+                  value={value}
+                  onChangeText={onChange}
+                />
+              )}
+            />
 
-          <Controller
-            name="password_confirm"
-            control={control}
-            render={({ field: { value, onChange } }) => (
-              <Input
-                placeholder="Confirme a senha"
-                secureTextEntry
-                returnKeyType="send"
-                errorMessage={errors.password_confirm?.message}
-                value={value}
-                onChangeText={onChange}
-                onSubmitEditing={handleSubmit(handleSignUp)}
-              />
-            )}
-          />
+            <Controller
+              name="password_confirm"
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <Input
+                  placeholder="Confirme a senha"
+                  secureTextEntry
+                  returnKeyType="send"
+                  errorMessage={errors.password_confirm?.message}
+                  value={value}
+                  onChangeText={onChange}
+                  onSubmitEditing={handleSubmit(handleSignUp)}
+                />
+              )}
+            />
+
+            <Button
+              title="Criar e acessar"
+              onPress={handleSubmit(handleSignUp)}
+            />
+          </Center>
 
           <Button
-            title="Criar e acessar"
-            onPress={handleSubmit(handleSignUp)}
+            mt={8}
+            title="Voltar para o login"
+            variant="outline"
+            onPress={handleGoBack}
           />
-        </Center>
-
-        <Button
-          mt={12}
-          title="Voltar para o login"
-          variant="outline"
-          onPress={handleGoBack}
-        />
+        </VStack>
       </VStack>
     </ScrollView>
   )
