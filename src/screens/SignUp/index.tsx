@@ -184,12 +184,24 @@ export const SignUp: React.FC = () => {
             />
           </Center>
 
-          <Button
-            mt={8}
-            title="Voltar para o login"
-            variant="outline"
-            onPress={handleGoBack}
-          />
+          <VStack mt={8}>
+            <Center>
+              <Text
+                color="gray.100"
+                fontSize="sm"
+                fontFamily="body"
+              >
+                Já tem acesso?
+              </Text>
+            </Center>
+
+            <Button
+              mt={4}
+              title="Voltar para o login"
+              variant="outline"
+              onPress={handleGoBack}
+            />
+          </VStack>
         </VStack>
       </VStack>
     </ScrollView>

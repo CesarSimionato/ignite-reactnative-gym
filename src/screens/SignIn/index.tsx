@@ -22,11 +22,7 @@ export const SignIn: React.FC = () => {
       contentContainerStyle={{ flexGrow: 1 }}
       showsVerticalScrollIndicator={false}
     >
-      <VStack
-        flex={1}
-        px={10}
-        pb={16}
-      >
+      <VStack flex={1}>
         <Image
           source={BackgroundImg}
           defaultSource={BackgroundImg}
@@ -35,57 +31,67 @@ export const SignIn: React.FC = () => {
           position="absolute"
         />
 
-        <Center my={24}>
-          <LogoSvg />
+        <VStack
+          flex={1}
+          justifyContent="space-between"
+          pt={24}
+          pb={10}
+          px={10}
+        >
+          <Center>
+            <LogoSvg />
 
-          <Text
-            color="gray.100"
-            fontSize="sm"
-          >
-            Treine sua mente e seu corpo
-          </Text>
-        </Center>
+            <Text
+              color="gray.100"
+              fontSize="sm"
+            >
+              Treine sua mente e seu corpo
+            </Text>
+          </Center>
 
-        <Center>
-          <Heading
-            mb="6"
-            color="gray.100"
-            fontSize="xl"
-            fontFamily="heading"
-          >
-            Acesse sua conta
-          </Heading>
+          <Center mt={8}>
+            <Heading
+              mb="8"
+              color="gray.100"
+              fontSize="xl"
+              fontFamily="heading"
+            >
+              Acesse sua conta
+            </Heading>
 
-          <Input
-            placeholder="E-mail"
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
+            <Input
+              placeholder="E-mail"
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
 
-          <Input
-            placeholder="Senha"
-            secureTextEntry
-          />
+            <Input
+              placeholder="Senha"
+              secureTextEntry
+            />
 
-          <Button title="Acessar" />
-        </Center>
+            <Button title="Acessar" />
+          </Center>
 
-        <Center mt={24}>
-          <Text
-            mb={3}
-            color="gray.100"
-            fontSize="sm"
-            fontFamily="body"
-          >
-            Ainda não tem acesso?
-          </Text>
-        </Center>
+          <VStack mt={8}>
+            <Center>
+              <Text
+                color="gray.100"
+                fontSize="sm"
+                fontFamily="body"
+              >
+                Ainda não tem acesso?
+              </Text>
+            </Center>
 
-        <Button
-          title="Criar conta"
-          variant="outline"
-          onPress={handleNewAccount}
-        />
+            <Button
+              mt={4}
+              title="Criar conta"
+              variant="outline"
+              onPress={handleNewAccount}
+            />
+          </VStack>
+        </VStack>
       </VStack>
     </ScrollView>
   )
