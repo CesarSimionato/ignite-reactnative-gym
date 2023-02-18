@@ -1,18 +1,28 @@
-import { ScrollView, VStack, Image, Center, Text, Heading } from "native-base"
+import {
+  ScrollView,
+  VStack,
+  Image,
+  Center,
+  Text,
+  Heading,
+  useToast,
+} from "native-base"
 
-import { useForm, Controller } from "react-hook-form"
-import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { useForm, Controller } from "react-hook-form"
+
+import { api } from "@services/api"
+import { AppError } from "@utils/AppError"
 
 import { useNavigation } from "@react-navigation/native"
 import { AuthNavigatorProps } from "@routes/auth.routes"
 
-import BackgroundImg from "@assets/background.png"
-
-import LogoSvg from "@assets/logo.svg"
-
 import { Input } from "@components/Input"
 import { Button } from "@components/Button"
+
+import BackgroundImg from "@assets/background.png"
+import LogoSvg from "@assets/logo.svg"
 
 const schema = yup.object({
   name: yup.string().required("Informe o nome"),
@@ -32,6 +42,8 @@ type FormData = yup.InferType<typeof schema>
 export const SignUp: React.FC = () => {
   const navigation = useNavigation<AuthNavigatorProps>()
 
+  const toast = useToast()
+
   const {
     control,
     handleSubmit,
@@ -44,8 +56,26 @@ export const SignUp: React.FC = () => {
     navigation.goBack()
   }
 
-  const handleSignUp = (data: FormData) => {
-    console.log(data)
+  const handleSignUp = async ({ name, email, password }: FormData) => {
+    try {
+      const response = await api.post("/users", {
+        name,
+        email,
+        password,
+      })
+    } catch (error) {
+      const isAppError = error instanceof AppError
+      const message = isAppError
+        ? error.message
+        : "Não foi possível criar a conta. Tente novamente mais tarde"
+
+      return toast.show({
+        description: message,
+        placement: "bottom",
+        bgColor: "red.500",
+        mb: 8,
+      })
+    }
   }
 
   return (
