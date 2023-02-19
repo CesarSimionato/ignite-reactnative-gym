@@ -2,11 +2,17 @@ import { TouchableOpacity } from "react-native"
 
 import { HStack, VStack, Text, Heading, Icon } from "native-base"
 
+import { useAuth } from "@hooks/useAuth"
+
 import { MaterialIcons } from "@expo/vector-icons"
 
 import { UserPhoto } from "@components/UserPhoto"
 
+import defaultUserPhotoImg from "@assets/userPhotoDefault.png"
+
 export const Header: React.FC = () => {
+  const { user, signOut } = useAuth()
+
   return (
     <HStack
       bg="gray.600"
@@ -16,7 +22,7 @@ export const Header: React.FC = () => {
       alignItems="center"
     >
       <UserPhoto
-        source={{ uri: "https://github.com/cesarmsimionato.png" }}
+        source={user.avatar ? { uri: user.avatar } : defaultUserPhotoImg}
         size={16}
         mr={4}
       />
@@ -34,11 +40,11 @@ export const Header: React.FC = () => {
           fontSize="md"
           fontFamily="heading"
         >
-          Cesar
+          {user.name}
         </Heading>
       </VStack>
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={signOut}>
         <Icon
           as={MaterialIcons}
           name="logout"

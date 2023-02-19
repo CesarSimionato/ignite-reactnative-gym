@@ -3,11 +3,11 @@ import { useState } from "react"
 import { useNavigation } from "@react-navigation/native"
 import { AppNavigatorProps } from "@routes/app.routes"
 
-import { VStack, FlatList, HStack, Heading, Text } from "native-base"
+import { FlatList, Heading, HStack, Text, VStack } from "native-base"
 
-import { Header } from "./components/Header"
-import { Group } from "./components/Group"
 import { ExerciseCard } from "./components/ExerciseCard"
+import { Group } from "./components/Group"
+import { Header } from "./components/Header"
 
 export const Home: React.FC = () => {
   const navigation = useNavigation<AppNavigatorProps>()

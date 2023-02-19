@@ -1,3 +1,5 @@
+import { useState } from "react"
+
 import {
   ScrollView,
   VStack,
@@ -11,6 +13,8 @@ import {
 import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useForm, Controller } from "react-hook-form"
+
+import { useAuth } from "@hooks/useAuth"
 
 import { api } from "@services/api"
 import { AppError } from "@utils/AppError"
@@ -40,9 +44,11 @@ const schema = yup.object({
 type FormData = yup.InferType<typeof schema>
 
 export const SignUp: React.FC = () => {
+  const toast = useToast()
+  const { signIn } = useAuth()
   const navigation = useNavigation<AuthNavigatorProps>()
 
-  const toast = useToast()
+  const [isLoading, setIsLoading] = useState(false)
 
   const {
     control,
@@ -52,18 +58,20 @@ export const SignUp: React.FC = () => {
     resolver: yupResolver(schema),
   })
 
-  const handleGoBack = () => {
-    navigation.goBack()
-  }
-
   const handleSignUp = async ({ name, email, password }: FormData) => {
     try {
-      const response = await api.post("/users", {
+      setIsLoading(true)
+
+      await api.post("/users", {
         name,
         email,
         password,
       })
+
+      await signIn(email, password)
     } catch (error) {
+      setIsLoading(false)
+
       const isAppError = error instanceof AppError
       const message = isAppError
         ? error.message
@@ -76,6 +84,10 @@ export const SignUp: React.FC = () => {
         mb: 8,
       })
     }
+  }
+
+  const handleGoBack = () => {
+    navigation.goBack()
   }
 
   return (
@@ -179,6 +191,7 @@ export const SignUp: React.FC = () => {
             />
 
             <Button
+              isLoading={isLoading}
               title="Criar e acessar"
               onPress={handleSubmit(handleSignUp)}
             />
