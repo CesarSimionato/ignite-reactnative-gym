@@ -9,6 +9,11 @@ import {
   storageUserGet,
   storageUserRemove,
 } from "@storage/storageUser"
+import {
+  storageAuthTokenSave,
+  storageAuthTokenGet,
+  storageAuthTokenRemove,
+} from "@storage/storageAuthToken"
 
 export type AuthContextProps = {
   user: UserDTO
@@ -31,12 +36,24 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
   const [user, setUser] = useState<UserDTO>({} as UserDTO)
   const [isLoadingUserStorageData, setIsLoadingUserStorageData] = useState(true)
 
+  const userAndTokenUpdate = (user: UserDTO, token: string) => {
+    api.defaults.headers.common.Authorization = `Bearer ${token}`
+
+    setUser(user)
+  }
+
   const signIn = async (email: string, password: string) => {
     const { data } = await api.post("/sessions", { email, password })
 
-    if (data.user) {
-      setUser(data.user)
+    if (data.user && data.token) {
+      setIsLoadingUserStorageData(true)
+
       await storageUserSave(data.user)
+      await storageAuthTokenSave(data.token)
+
+      userAndTokenUpdate(data.user, data.token)
+
+      setIsLoadingUserStorageData(false)
     }
   }
 
@@ -45,18 +62,22 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
 
     setUser({} as UserDTO)
     await storageUserRemove()
+    await storageAuthTokenRemove()
 
-    setIsLoadingUserStorageData(false)
-  }
-
-  const loadUserData = async () => {
-    const user = await storageUserGet()
-
-    setUser(user)
     setIsLoadingUserStorageData(false)
   }
 
   useEffect(() => {
+    const loadUserData = async () => {
+      const user = await storageUserGet()
+      const token = await storageAuthTokenGet()
+
+      if (token) {
+        userAndTokenUpdate(user, token)
+      }
+
+      setIsLoadingUserStorageData(false)
+    }
     loadUserData()
   }, [])
 

@@ -55,9 +55,8 @@ export const Profile: React.FC = () => {
           ) {
             return toast.show({
               description: `Essa imagem é muito grande, Escolha uma até ${MAX_UPLOAD_PHOTO_SIZE}MB`,
-              placement: "bottom",
+              placement: "top",
               bgColor: "red.500",
-              mb: 8,
             })
           }
 

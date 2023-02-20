@@ -79,9 +79,8 @@ export const SignUp: React.FC = () => {
 
       return toast.show({
         description: message,
-        placement: "bottom",
+        placement: "top",
         bgColor: "red.500",
-        mb: 8,
       })
     }
   }
