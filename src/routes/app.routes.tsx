@@ -16,11 +16,13 @@ import { History } from "@screens/History"
 import { Profile } from "@screens/Profile"
 import { Exercise } from "@screens/Exercise"
 
-type AppScreens = {
+export type AppScreens = {
   home: undefined
   history: undefined
   profile: undefined
-  exercise: undefined
+  exercise: {
+    exerciseId: string
+  }
 }
 
 export type AppNavigatorProps = BottomTabNavigationProp<AppScreens>

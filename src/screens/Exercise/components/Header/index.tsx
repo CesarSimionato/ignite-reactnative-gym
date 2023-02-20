@@ -9,7 +9,12 @@ import { Feather } from "@expo/vector-icons"
 
 import BodySvg from "@assets/body.svg"
 
-export const Header: React.FC = () => {
+type HeaderProps = {
+  name: string
+  group: string
+}
+
+export const Header: React.FC<HeaderProps> = ({ name, group }) => {
   const navigation = useNavigation<AppNavigatorProps>()
 
   const handleGoBack = () => {
@@ -43,7 +48,7 @@ export const Header: React.FC = () => {
           fontSize="lg"
           fontFamily="heading"
         >
-          Puxada frontal
+          {name}
         </Heading>
 
         <HStack alignItems="center">
@@ -54,7 +59,7 @@ export const Header: React.FC = () => {
             color="gray.200"
             textTransform="capitalize"
           >
-            Costas
+            {group}
           </Text>
         </HStack>
       </HStack>
