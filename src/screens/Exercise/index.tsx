@@ -10,7 +10,8 @@ import {
   useToast,
 } from "native-base"
 
-import { RouteProp, useRoute } from "@react-navigation/native"
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native"
+import { AppScreens, AppNavigatorProps } from "@routes/app.routes"
 
 import { ExerciseDTO } from "@dtos/ExerciseDTO"
 
@@ -23,10 +24,11 @@ import { Button } from "@components/Button"
 
 import SeriesSvg from "@assets/series.svg"
 import RepetitionsSvg from "@assets/repetitions.svg"
-import { AppScreens } from "@routes/app.routes"
 import { Skeleton } from "@components/Skeleton"
 
 export const Exercise: React.FC = () => {
+  const navigation = useNavigation<AppNavigatorProps>()
+
   const {
     params: { exerciseId },
   } = useRoute<RouteProp<AppScreens, "exercise">>()
@@ -36,6 +38,36 @@ export const Exercise: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true)
 
   const [exercise, setExercise] = useState<ExerciseDTO>({} as ExerciseDTO)
+
+  const [sendingRegister, setSendingRegister] = useState(false)
+
+  const handleExerciseHistoryRegister = async () => {
+    try {
+      setSendingRegister(true)
+      await api.post("/history", { exercise_id: exercise })
+
+      toast.show({
+        description: "Parabéns! Exercício registrado no seu histórico.",
+        placement: "top",
+        bgColor: "green.700",
+      })
+
+      navigation.navigate("history")
+    } catch (error) {
+      const isAppError = error instanceof AppError
+      const message = isAppError
+        ? error.message
+        : "Não foi possível registrar o exercício."
+
+      return toast.show({
+        description: message,
+        placement: "top",
+        bgColor: "red.500",
+      })
+    } finally {
+      setSendingRegister(false)
+    }
+  }
 
   useEffect(() => {
     const fetchExerciseDetails = async () => {
@@ -137,7 +169,11 @@ export const Exercise: React.FC = () => {
                 </HStack>
               </HStack>
 
-              <Button title="Marcar como realizado" />
+              <Button
+                title="Marcar como realizado"
+                onPress={handleExerciseHistoryRegister}
+                isLoading={sendingRegister}
+              />
             </Box>
           </VStack>
         </ScrollView>
