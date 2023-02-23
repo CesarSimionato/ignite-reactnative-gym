@@ -1,6 +1,14 @@
 import { HStack, VStack, Heading, Text } from "native-base"
 
-export const HistoryCard: React.FC = () => {
+import { HistoryDTO } from "@dtos/HistoryDTO"
+
+type Props = {
+  data: HistoryDTO
+}
+
+export const HistoryCard: React.FC<Props> = ({
+  data: { name, group, hour },
+}) => {
   return (
     <HStack
       bg="gray.600"
@@ -23,7 +31,7 @@ export const HistoryCard: React.FC = () => {
           textTransform="capitalize"
           numberOfLines={1}
         >
-          Costas
+          {group}
         </Heading>
 
         <Text
@@ -31,7 +39,7 @@ export const HistoryCard: React.FC = () => {
           fontSize="lg"
           numberOfLines={1}
         >
-          Puxada Frontal
+          {name}
         </Text>
       </VStack>
 
@@ -39,7 +47,7 @@ export const HistoryCard: React.FC = () => {
         color="gray.300"
         fontSize="md"
       >
-        08:56
+        {hour}
       </Text>
     </HStack>
   )

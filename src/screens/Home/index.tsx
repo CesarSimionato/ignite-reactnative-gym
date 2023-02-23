@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import { useState, useEffect, useCallback } from "react"
 
 import { useNavigation, useFocusEffect } from "@react-navigation/native"
@@ -50,7 +52,7 @@ export const Home: React.FC = () => {
       }
     }
     fetchGroups()
-  }, [toast])
+  }, [])
 
   useFocusEffect(
     useCallback(() => {

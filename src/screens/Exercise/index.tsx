@@ -44,7 +44,7 @@ export const Exercise: React.FC = () => {
   const handleExerciseHistoryRegister = async () => {
     try {
       setSendingRegister(true)
-      await api.post("/history", { exercise_id: exercise })
+      await api.post("/history", { exercise_id: exerciseId })
 
       toast.show({
         description: "Parabéns! Exercício registrado no seu histórico.",
