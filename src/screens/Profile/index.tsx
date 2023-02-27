@@ -1,10 +1,5 @@
+/* eslint-disable camelcase */
 import { useState } from "react"
-
-import * as ImagePicker from "expo-image-picker"
-
-import * as FileSystem from "expo-file-system"
-
-import { TouchableOpacity } from "react-native"
 
 import {
   VStack,
@@ -16,10 +11,52 @@ import {
   useToast,
 } from "native-base"
 
+import * as ImagePicker from "expo-image-picker"
+
+import * as FileSystem from "expo-file-system"
+
+import { TouchableOpacity } from "react-native"
+
+import * as yup from "yup"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { Controller, useForm } from "react-hook-form"
+
+import { useAuth } from "@hooks/useAuth"
+
+import { api } from "@services/api"
+import { AppError } from "@utils/AppError"
+
 import { ScreenHeader } from "@components/ScreenHeader"
 import { UserPhoto } from "@components/UserPhoto"
 import { Input } from "@components/Input"
 import { Button } from "@components/Button"
+
+import defaultUserPhotoImg from "@assets/userPhotoDefault.png"
+
+const schema = yup.object({
+  name: yup.string().required("Informe o nome"),
+  old_password: yup.string(),
+  password: yup
+    .string()
+    .min(6, "A senha deve ter pelo menos 6 dígitos")
+    .nullable()
+    .transform((value) => value || null),
+  password_confirm: yup
+    .string()
+    .nullable()
+    .transform((value) => value || null)
+    .oneOf([yup.ref("password")], "A confirmação da senha não confere")
+    .when("password", {
+      is: (Field: any) => Field,
+      then: (schema) =>
+        schema
+          .nullable()
+          .required("Confirme a nova senha")
+          .transform((value) => value || null),
+    }),
+})
+
+type FormData = yup.InferType<typeof schema>
 
 const PHOTO_SIZE = 33
 const MAX_UPLOAD_PHOTO_SIZE = 3 // MB
@@ -27,10 +64,22 @@ const MAX_UPLOAD_PHOTO_SIZE = 3 // MB
 export const Profile: React.FC = () => {
   const toast = useToast()
 
+  const { user, updateUserProfile } = useAuth()
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: user.name,
+    },
+  })
+
+  const [isUpdating, setIsUpdating] = useState(false)
+
   const [photoIsLoading, setPhotoIsLoading] = useState(false)
-  const [userPhoto, setUserPhoto] = useState(
-    "https://github.com/cesarmsimionato.png",
-  )
 
   const handleUserPhotoSelect = async () => {
     try {
@@ -60,12 +109,80 @@ export const Profile: React.FC = () => {
             })
           }
 
-          setUserPhoto(photoSelected.assets[0].uri)
+          console.log(photoSelected.assets[0].type)
+
+          const fileExtension = photoSelected.assets[0].uri.split(".").pop()
+
+          const photoFile = {
+            name: `${user.name}.${fileExtension}`.toLocaleLowerCase(),
+            uri: photoSelected.assets[0].uri,
+            type: `${photoSelected.assets[0].type}/${fileExtension}`,
+          } as any
+
+          const userPhotoUploadForm = new FormData()
+          userPhotoUploadForm.append("avatar", photoFile)
+
+          const { data } = await api.patch(
+            "/users/avatar",
+            userPhotoUploadForm,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            },
+          )
+
+          const avatar = data.avatar
+
+          await updateUserProfile({ ...user, avatar })
+
+          return toast.show({
+            description: "Foto atualizada!",
+            placement: "top",
+            bgColor: "green.500",
+          })
         }
       }
     } catch (error) {
     } finally {
       setPhotoIsLoading(false)
+    }
+  }
+
+  const handleProfileUpdate = async ({
+    name,
+    password,
+    old_password,
+  }: FormData) => {
+    try {
+      setIsUpdating(true)
+
+      await api.put("/users", {
+        name,
+        password,
+        old_password,
+      })
+
+      await updateUserProfile({ ...user, name })
+
+      return toast.show({
+        description: "Perfil atualizado com sucesso",
+        placement: "top",
+        bgColor: "green.500",
+      })
+    } catch (error) {
+      const isAppError = error instanceof AppError
+      const message = isAppError
+        ? error.message
+        : "Não foi possível alterar os dados. Tente novamente mais tarde"
+
+      return toast.show({
+        description: message,
+        placement: "top",
+        bgColor: "red.500",
+      })
+    } finally {
+      setIsUpdating(false)
     }
   }
 
@@ -89,7 +206,11 @@ export const Profile: React.FC = () => {
             />
           ) : (
             <UserPhoto
-              source={{ uri: userPhoto }}
+              source={
+                user.avatar
+                  ? { uri: `${api.defaults.baseURL}/avatar/${user.avatar}` }
+                  : defaultUserPhotoImg
+              }
               size={PHOTO_SIZE}
             />
           )}
@@ -107,16 +228,25 @@ export const Profile: React.FC = () => {
             </Text>
           </TouchableOpacity>
 
-          <Input
-            bg="gray.600"
-            placeholder="Nome"
+          <Controller
+            name="name"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <Input
+                bg="gray.600"
+                placeholder="Nome"
+                errorMessage={errors.name?.message}
+                value={value}
+                onChangeText={onChange}
+              />
+            )}
           />
 
           <Input
             bg="gray.600"
             isDisabled
             placeholder="E-mail"
-            value="cesar.medeiros.simionato@gmail.com"
+            value={user.email}
           />
 
           <Heading
@@ -130,27 +260,54 @@ export const Profile: React.FC = () => {
             Alterar senha
           </Heading>
 
-          <Input
-            bg="gray.600"
-            secureTextEntry
-            placeholder="Senha antiga"
+          <Controller
+            name="old_password"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <Input
+                bg="gray.600"
+                placeholder="Senha atual"
+                secureTextEntry
+                errorMessage={errors.old_password?.message}
+                value={value}
+                onChangeText={onChange}
+              />
+            )}
           />
 
-          <Input
-            bg="gray.600"
-            secureTextEntry
-            placeholder="Nova senha"
+          <Controller
+            name="password"
+            control={control}
+            render={({ field: { onChange } }) => (
+              <Input
+                bg="gray.600"
+                placeholder="Nova senha"
+                secureTextEntry
+                errorMessage={errors.password?.message}
+                onChangeText={onChange}
+              />
+            )}
           />
 
-          <Input
-            bg="gray.600"
-            secureTextEntry
-            placeholder="Confirme a nova senha"
+          <Controller
+            name="password_confirm"
+            control={control}
+            render={({ field: { onChange } }) => (
+              <Input
+                bg="gray.600"
+                placeholder="Confirme a nova senha"
+                secureTextEntry
+                errorMessage={errors.password_confirm?.message as string}
+                onChangeText={onChange}
+              />
+            )}
           />
 
           <Button
             mt={4}
             title="Atualizar"
+            isLoading={isUpdating}
+            onPress={handleSubmit(handleProfileUpdate)}
           />
         </Center>
       </ScrollView>

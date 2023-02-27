@@ -2,6 +2,8 @@ import { TouchableOpacity } from "react-native"
 
 import { HStack, VStack, Text, Heading, Icon } from "native-base"
 
+import { api } from "@services/api"
+
 import { useAuth } from "@hooks/useAuth"
 
 import { MaterialIcons } from "@expo/vector-icons"
@@ -22,7 +24,11 @@ export const Header: React.FC = () => {
       alignItems="center"
     >
       <UserPhoto
-        source={user.avatar ? { uri: user.avatar } : defaultUserPhotoImg}
+        source={
+          user.avatar
+            ? { uri: `${api.defaults.baseURL}/avatar/${user.avatar}` }
+            : defaultUserPhotoImg
+        }
         size={16}
         mr={4}
       />

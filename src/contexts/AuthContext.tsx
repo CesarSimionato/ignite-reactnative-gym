@@ -19,6 +19,7 @@ export type AuthContextProps = {
   user: UserDTO
   signIn: (email: string, password: string) => Promise<void>
   signOut: () => Promise<void>
+  updateUserProfile: (user: UserDTO) => Promise<void>
   isLoadingUserStorageData: boolean
 }
 
@@ -67,6 +68,12 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
     setIsLoadingUserStorageData(false)
   }
 
+  const updateUserProfile = async (user: UserDTO) => {
+    setUser(user)
+
+    await storageUserSave(user)
+  }
+
   useEffect(() => {
     const loadUserData = async () => {
       const user = await storageUserGet()
@@ -87,6 +94,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
         user,
         signIn,
         signOut,
+        updateUserProfile,
         isLoadingUserStorageData,
       }}
     >
