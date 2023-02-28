@@ -46,11 +46,14 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
   const signIn = async (email: string, password: string) => {
     const { data } = await api.post("/sessions", { email, password })
 
-    if (data.user && data.token) {
+    if (data.user && data.token && data.refresh_token) {
       setIsLoadingUserStorageData(true)
 
       await storageUserSave(data.user)
-      await storageAuthTokenSave(data.token)
+      await storageAuthTokenSave({
+        token: data.token,
+        refresh_token: data.refresh_token,
+      })
 
       userAndTokenUpdate(data.user, data.token)
 
@@ -77,7 +80,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
   useEffect(() => {
     const loadUserData = async () => {
       const user = await storageUserGet()
-      const token = await storageAuthTokenGet()
+      const { token } = await storageAuthTokenGet()
 
       if (token) {
         userAndTokenUpdate(user, token)
@@ -86,6 +89,14 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
       setIsLoadingUserStorageData(false)
     }
     loadUserData()
+  }, [])
+
+  useEffect(() => {
+    const subscribe = api.registerInterceptTokenManager(signOut)
+
+    return () => {
+      subscribe()
+    }
   }, [])
 
   return (
